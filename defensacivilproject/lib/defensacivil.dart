@@ -18,7 +18,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inicio'),
+        title: Text('Inicio '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -30,6 +31,7 @@ class HomePage extends StatelessWidget {
           },
         ),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -146,29 +148,30 @@ class _ActionSliderState extends State<ActionSlider> {
     );
   }
 }
+
 class DrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Color(0xFF314F66),
+        color: Color(0xFF314F66), // Color de fondo del contenedor
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Color(0xFF18355F),
-              ),
-              child: Center(
-                child: Text(
-                  'Menú',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
+                color: Color(0xFF18355F), // Color de fondo del encabezado
+                image: DecorationImage(
+                  image: AssetImage('assets/defensa.png'), // Ruta de la imagen en tus assets
+                  fit: BoxFit.cover, // Esto hará que la imagen cubra todo el espacio
                 ),
               ),
+              child: null, 
             ),
+            buildListTile(Icons.home, 'Inicio', () {
+              Navigator.pop(context); // Cerrar el DrawerMenu
+              Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));// Regresar a la página de inicio
+            }),
             buildListTile(Icons.library_books, 'Historia', () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) => HistoriaPage()));
@@ -204,6 +207,18 @@ class DrawerMenu extends StatelessWidget {
             buildListTile(Icons.volunteer_activism, 'Quiero ser Voluntario', () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context) => QuieroSerVoluntarioPage()));
+            }),
+            buildListTile(Icons.report, 'Reportar Situación', () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ReportarSituacionPage()));
+            }),
+            buildListTile(Icons.history, 'Mis Situaciones', () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MisSituacionesPage()));
+            }),
+            buildListTile(Icons.map_outlined, 'Mapa de Situaciones', () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MapaSituacionesPage()));
             }),
             // Añadir el ListTile para salir
             ListTile(
@@ -254,7 +269,8 @@ class HistoriaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Historia'),
+        title: Text('Historia '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -279,7 +295,8 @@ class ServiciosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Servicios'),
+        title: Text(' Servicios '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -291,6 +308,7 @@ class ServiciosPage extends StatelessWidget {
           },
         ),
       ),
+
       body: Center(
         child: Text('Página de Servicios'),
       ),
@@ -304,7 +322,8 @@ class NoticiasPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Noticias'),
+        title: Text('Noticias '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -329,7 +348,8 @@ class VideosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Videos'),
+        title: Text('Videos '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -354,7 +374,8 @@ class AlberguesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Albergues'),
+        title: Text('Albergues '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -378,8 +399,9 @@ class MapaAlberguesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Mapa de Albergues'),
+     appBar: AppBar(
+        title: Text('MapaAlbergues '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -404,7 +426,8 @@ class MedidasPreventivasPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Medidas Preventivas'),
+        title: Text('MedidasPreventivas '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -429,7 +452,8 @@ class MiembrosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Miembros'),
+        title: Text('Miembros '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -454,7 +478,8 @@ class QuieroSerVoluntarioPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quiero ser Voluntario'),
+        title: Text('Quiero ser Voluntario '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -468,6 +493,84 @@ class QuieroSerVoluntarioPage extends StatelessWidget {
       ),
       body: Center(
         child: Text('Página de Quiero ser Voluntario'),
+      ),
+      drawer: DrawerMenu(),
+    );
+  }
+}
+
+class ReportarSituacionPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Reportar Situaciones '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      body: Center(
+        child: Text('Página para reportar situaciones de emergencia'),
+      ),
+      drawer: DrawerMenu(),
+    );
+  }
+}
+
+class MisSituacionesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mis Situaciones '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      body: Center(
+        child: Text('Página para visualizar el historial de situaciones reportadas'),
+      ),
+      drawer: DrawerMenu(),
+    );
+  }
+}
+
+class MapaSituacionesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mapa de Situaciones '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      body: Center(
+        child: Text('Página para visualizar el mapa interactivo de situaciones reportadas'),
       ),
       drawer: DrawerMenu(),
     );

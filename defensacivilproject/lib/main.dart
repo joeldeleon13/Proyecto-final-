@@ -7,11 +7,11 @@ import 'package:defensacivilproject/signup.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: HomePage(),
+    home: BienvenidoPage(),
   ));
 }
 
-class HomePage extends StatelessWidget {
+class BienvenidoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  Text("Esta es  nuestra aplicacion de defensa civil.",
+                  Text("Esta es nuestra aplicación de defensa civil.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.grey[700],

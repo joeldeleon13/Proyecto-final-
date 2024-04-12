@@ -82,11 +82,12 @@ class SignupPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 40),
-          // No establezcas la altura del contenedor para que pueda crecer según sea necesario
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     "Registrarse",
@@ -111,66 +112,67 @@ class SignupPage extends StatelessWidget {
                   inputFile(label: "Nombre", controller: _nombreController),
                   inputFile(label: "Apellido", controller: _apellidoController),
                   inputFile(
-                      label: "Contraseña",
-                      controller: _claveController,
-                      obscureText: true),
+                    label: "Contraseña",
+                    controller: _claveController,
+                    obscureText: true,
+                  ),
                   inputFile(
-                      label: "Correo electrónico",
-                      controller: _correoController),
+                    label: "Correo electrónico",
+                    controller: _correoController,
+                  ),
                   inputFile(label: "Teléfono", controller: _telefonoController),
                 ],
               ),
-              Container(
-                padding: EdgeInsets.only(top: 3, left: 3),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border(
-                    bottom: BorderSide(color: Colors.black),
-                    top: BorderSide(color: Colors.black),
-                    left: BorderSide(color: Colors.black),
-                    right: BorderSide(color: Colors.black),
-                  ),
-                ),
-                child: MaterialButton(
-                  minWidth: double.infinity,
-                  height: 60,
-                  onPressed: () {
-                    register(context);
-                  },
-                  color: Color.fromARGB(255, 255, 136, 0),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Text(
-                    "Registrarse",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
                 children: <Widget>[
-                  Text("¿Ya tienes una cuenta?"),
-                  GestureDetector(
-                    onTap: () {
-                      // Navegar a la pantalla de inicio de sesión
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()));
-                    },
-                    child: Text(
-                      " Iniciar sesión",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                        color: Colors
-                            .blue, // Cambiamos el color a azul para indicar que es un enlace
+                  Container(
+                    padding: EdgeInsets.only(top: 3, left: 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(color: Colors.black),
+                    ),
+                    child: MaterialButton(
+                      minWidth: double.infinity,
+                      height: 60,
+                      onPressed: () {
+                        register(context);
+                      },
+                      color: Color.fromARGB(255, 255, 136, 0),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Text(
+                        "Registrarse",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text("¿Ya tienes una cuenta?"),
+                      GestureDetector(
+                        onTap: () {
+                          // Navegar a la pantalla de inicio de sesión
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => LoginPage()));
+                        },
+                        child: Text(
+                          " Iniciar sesión",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

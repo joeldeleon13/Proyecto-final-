@@ -150,7 +150,7 @@ class RecuperarPasswordPage extends StatelessWidget {
                         onPressed: () {
                           _recoverPassword(context);
                         },
-                        color: Color(0xff0095FF),
+                        color: Color.fromARGB(255, 255, 140, 0),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
