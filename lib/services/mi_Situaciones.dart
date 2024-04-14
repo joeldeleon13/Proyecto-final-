@@ -89,8 +89,8 @@ class _MySituationsPageState extends State<MySituationsPage> {
         itemCount: situations.length,
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
-            title: Text(situations[index].title),
-            subtitle: Text('Reportado el ${situations[index].date.toString()}'),
+            title: Text(situations[index].titulo),
+            subtitle: Text('Reportado el ${situations[index].fecha.toString()}'),
             onTap: () {
               Navigator.push(
                 context,
@@ -121,9 +121,9 @@ class SituationDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text('Código de Identificación: ${situation.id}'),
-            Text('Fecha: ${situation.date.toString()}'),
-            Text('Título: ${situation.title}'),
-            Text('Descripción: ${situation.description}'),
+            Text('Fecha: ${situation.fecha.toString()}'),
+            Text('Título: ${situation.titulo}'),
+            Text('Descripción: ${situation.descripcion}'),
             // Aquí puedes mostrar más detalles como la imagen, estado, comentarios, etc.
           ],
         ),
