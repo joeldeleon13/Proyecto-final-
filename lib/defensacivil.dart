@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'services/reports.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -9,13 +11,18 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HomePage(),
+    return const MaterialApp(
+      home: HomePage(
+        token: '',
+      ),
     );
   }
 }
 
 class HomePage extends StatelessWidget {
+  final String token;
+
+  const HomePage({Key? key, required this.token}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,8 +182,9 @@ class DrawerMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          HomePage())); // Regresar a la página de inicio
+                      builder: (context) => const HomePage(
+                            token: '',
+                          ))); // Regresar a la página de inicio
             }),
             buildListTile(Icons.library_books, 'Historia', () {
               Navigator.pop(context);
@@ -228,13 +236,21 @@ class DrawerMenu extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => QuieroSerVoluntarioPage()));
             }),
-            buildListTile(Icons.report, 'Reportar Situación', () {
-              Navigator.pop(context);
-              Navigator.push(
+            buildListTile(
+              Icons.report,
+              'Reportar Situación',
+              () {
+                Navigator.pop(context);
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReportarSituacionPage()));
-            }),
+                    builder: (context) =>
+                        const ReportSituationPage(token: "",),
+                  ),
+                );
+              },
+            ),
+
             buildListTile(Icons.history, 'Mis Situaciones', () {
               Navigator.pop(context);
               Navigator.push(
@@ -352,7 +368,7 @@ class ServiciosPage extends StatelessWidget {
 }
 
 class NoticiasPage extends StatelessWidget {
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -371,7 +387,8 @@ class NoticiasPage extends StatelessWidget {
       ),
       body: FutureBuilder(
         future: _fetchNoticias(),
-        builder: (BuildContext context, AsyncSnapshot<List<Map<String, String>>> snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Map<String, String>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -398,34 +415,32 @@ class NoticiasPage extends StatelessWidget {
   }
 
   Future<List<Map<String, String>>> _fetchNoticias() async {
-  final String apiUrl = 'https://adamix.net/defensa_civil/def/noticias.php';
+    final String apiUrl = 'https://adamix.net/defensa_civil/def/noticias.php';
 
-  final response = await http.get(Uri.parse(apiUrl));
+    final response = await http.get(Uri.parse(apiUrl));
 
-  if (response.statusCode == 200) {
-    final data = json.decode(response.body);
-    final List<dynamic> noticiasData = data['datos'];
-    
-    // Lista donde se almacenarán las noticias con los tipos adecuados
-    List<Map<String, String>> noticias = [];
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> noticiasData = data['datos'];
 
-    // Iterar sobre cada noticia y convertirla al tipo correcto
-    noticiasData.forEach((noticia) {
-      noticias.add({
-        'titulo': noticia['titulo'],
-        'contenido': noticia['contenido'],
-        'foto': noticia['foto'],
+      // Lista donde se almacenarán las noticias con los tipos adecuados
+      List<Map<String, String>> noticias = [];
+
+      // Iterar sobre cada noticia y convertirla al tipo correcto
+      noticiasData.forEach((noticia) {
+        noticias.add({
+          'titulo': noticia['titulo'],
+          'contenido': noticia['contenido'],
+          'foto': noticia['foto'],
+        });
       });
-    });
 
-    return noticias;
-  } else {
-    throw Exception('Failed to load noticias');
+      return noticias;
+    } else {
+      throw Exception('Failed to load noticias');
+    }
   }
 }
-}
-
-
 
 class VideosPage extends StatelessWidget {
   @override
@@ -844,32 +859,6 @@ class _QuieroSerVoluntarioPageState extends State<QuieroSerVoluntarioPage> {
             ),
           ],
         ),
-      ),
-      drawer: DrawerMenu(),
-    );
-  }
-}
-
-class ReportarSituacionPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Reportar Situaciones '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      body: Center(
-        child: Text('Página para reportar situaciones de emergencia'),
       ),
       drawer: DrawerMenu(),
     );
