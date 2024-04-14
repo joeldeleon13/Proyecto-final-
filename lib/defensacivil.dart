@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'services/news.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -345,32 +347,6 @@ class ServiciosPage extends StatelessWidget {
       ),
       body: Center(
         child: Text('Página de Servicios'),
-      ),
-      drawer: DrawerMenu(),
-    );
-  }
-}
-
-class NoticiasPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Noticias '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      body: Center(
-        child: Text('Página de Noticias'),
       ),
       drawer: DrawerMenu(),
     );
