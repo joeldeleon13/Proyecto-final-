@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -6,7 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ReportSituationPage extends StatefulWidget {
-  const ReportSituationPage({Key? key}) : super(key: key);
+  final String token;
+
+  const ReportSituationPage({Key? key, required this.token}) : super(key: key);
 
   @override
   _ReportSituationPageState createState() => _ReportSituationPageState();
@@ -51,7 +55,6 @@ class _ReportSituationPageState extends State<ReportSituationPage> {
       base64Image = base64Encode(_imageBytes!);
     }
 
-    
     // Envía la solicitud POST a la API
     final response = await http.post(
       Uri.parse('https://adamix.net/defensa_civil/def/nueva_situacion.php'),
@@ -61,7 +64,7 @@ class _ReportSituationPageState extends State<ReportSituationPage> {
         'foto': base64Image,
         'latitud': '0', // Latitud de ejemplo, debes obtenerla del dispositivo
         'longitud': '0', // Longitud de ejemplo, debes obtenerla del dispositivo
-        'token': [],
+        'token': widget.token, // Usar el token proporcionado por el usuario
       },
     );
 
@@ -121,13 +124,6 @@ class _ReportSituationPageState extends State<ReportSituationPage> {
     }
   }
 
-  Future<void> _getImageFromUrl(String imageUrl) async {
-    setState(() {
-      _imageBytes = null;
-      _imageUrl = imageUrl;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,13 +162,6 @@ class _ReportSituationPageState extends State<ReportSituationPage> {
                 ElevatedButton(
                   onPressed: _getImageFromGallery,
                   child: const Text('Seleccionar Imagen de la Galería'),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    _getImageFromUrl('URL_DE_LA_IMAGEN_AQUÍ');
-                  },
-                  child: const Text('Usar URL de Imagen'),
                 ),
               ],
             ),

@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, file_names
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,18 +10,18 @@ class Situation {
   final DateTime fecha;
   final String titulo;
   final String descripcion;
-  final String status;
-  final String feedback;
-  final String imageUrl;
+  final String estado;
+  final String comentarios;
+  final String foto;
 
   Situation({
     required this.id,
     required this.fecha,
     required this.titulo,
     required this.descripcion,
-    required this.status,
-    required this.feedback,
-    required this.imageUrl,
+    required this.estado,
+    required this.comentarios,
+    required this.foto,
   });
 }
 
@@ -68,9 +68,9 @@ class _MySituationsPageState extends State<MySituationsPage> {
             fecha: DateTime.parse(situation['fecha']),
             titulo: situation['titulo'],
             descripcion: situation['descripcion'],
-            status: situation['status'],
-            feedback: situation['feedback'],
-            imageUrl: situation['imageUrl'],
+            estado: situation['estado'],
+            comentarios: situation['comentarios'],
+            foto: situation['foto'],
           );
         }).toList();
       });
@@ -124,6 +124,8 @@ class SituationDetailsPage extends StatelessWidget {
             Text('Fecha: ${situation.fecha.toString()}'),
             Text('Título: ${situation.titulo}'),
             Text('Descripción: ${situation.descripcion}'),
+            Text('estado: ${situation.estado}'),
+            Text('comentarios: ${situation.comentarios}'),
             // Aquí puedes mostrar más detalles como la imagen, estado, comentarios, etc.
           ],
         ),
