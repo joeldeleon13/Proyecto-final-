@@ -28,6 +28,10 @@ class LoginPage extends StatelessWidget {
         final bool success = responseData['exito'];
 
         if (success) {
+          // Imprime los datos recibidos en la consola de depuración
+          print('Inicio de sesión exitoso:');
+          print(responseData['datos']);
+
           // Navegar a la página HomePage después de iniciar sesión correctamente
           Navigator.pushReplacement(
             context,

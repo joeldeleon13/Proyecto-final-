@@ -525,28 +525,85 @@ class VideosPage extends StatelessWidget {
   }
 }
 
-class AlberguesPage extends StatelessWidget {
+class AlberguesPage extends StatefulWidget {
+  @override
+  _AlberguesPageState createState() => _AlberguesPageState();
+}
+
+class _AlberguesPageState extends State<AlberguesPage> {
+  late List<dynamic> _albergues;
+  late List<dynamic> _filteredAlbergues;
+  TextEditingController _searchController = TextEditingController();
+
+  @override
+void initState() {
+  super.initState();
+  _albergues = [];
+  _filteredAlbergues = [];
+  _fetchAlbergues();
+}
+
+  Future<void> _fetchAlbergues() async {
+    final response = await http.get(Uri.parse('https://adamix.net/defensa_civil/def/albergues.php'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> alberguesData = data['datos'];
+      setState(() {
+        _albergues = alberguesData;
+        _filteredAlbergues = _albergues;
+      });
+    } else {
+      throw Exception('Failed to load albergues');
+    }
+  }
+
+  void _filterAlbergues(String query) {
+    setState(() {
+      _filteredAlbergues = _albergues.where((albergue) {
+        final ciudad = albergue['ciudad'].toString().toLowerCase();
+        return ciudad.contains(query.toLowerCase());
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Albergues '),
+        title: Text('Albergues'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (value) => _filterAlbergues(value),
+              decoration: InputDecoration(
+                labelText: 'Buscar por ciudad',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _filteredAlbergues.length,
+              itemBuilder: (context, index) {
+                final albergue = _filteredAlbergues[index];
+                return ListTile(
+                  title: Text(albergue['ciudad']),
+                  subtitle: Text(albergue['edificio']),
+                  onTap: () {
+                    // Acción al seleccionar un albergue
+                  },
+                );
               },
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
-      body: Center(
-        child: Text('Página de Albergues'),
-      ),
-      drawer: DrawerMenu(),
     );
   }
 }
