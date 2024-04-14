@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'services/reports.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -18,12 +20,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inicio '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Inicio '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -42,10 +44,10 @@ class HomePage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ActionSlider(),
-            SizedBox(height: 20),
-            Padding(
+            const SizedBox(height: 20),
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 'La Defensa Civil es una organización encargada de prevenir y mitigar desastres naturales y situaciones de emergencia. Sus acciones principales incluyen la planificación, prevención, educación, asistencia y recuperación.',
@@ -81,11 +83,11 @@ class _ActionSliderState extends State<ActionSlider> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
+        const Text(
           'Acciones Importantes de la Defensa Civil',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Container(
           height: 200,
           child: PageView.builder(
@@ -101,7 +103,7 @@ class _ActionSliderState extends State<ActionSlider> {
             },
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: actions.map((action) {
@@ -109,7 +111,7 @@ class _ActionSliderState extends State<ActionSlider> {
             return Container(
               width: 10,
               height: 10,
-              margin: EdgeInsets.symmetric(horizontal: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color:
@@ -126,21 +128,21 @@ class _ActionSliderState extends State<ActionSlider> {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      margin: EdgeInsets.symmetric(horizontal: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       color: Colors.orange,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.star,
               size: 50,
               color: Colors.white,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               action,
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: const TextStyle(fontSize: 18, color: Colors.white),
             ),
           ],
         ),
@@ -154,11 +156,11 @@ class DrawerMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Color(0xFF314F66), // Color de fondo del contenedor
+        color: const Color(0xFF314F66), // Color de fondo del contenedor
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Color(0xFF18355F), // Color de fondo del encabezado
                 image: DecorationImage(
@@ -210,7 +212,7 @@ class DrawerMenu extends StatelessWidget {
             }),
             buildListTile(Icons.report, 'Reportar Situación', () {
               Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ReportarSituacionPage()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportSituationPage()));
             }),
             buildListTile(Icons.history, 'Mis Situaciones', () {
               Navigator.pop(context);
@@ -222,11 +224,11 @@ class DrawerMenu extends StatelessWidget {
             }),
             // Añadir el ListTile para salir
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.exit_to_app,
                 color: Colors.white,
               ),
-              title: Text(
+              title: const Text(
                 'Salir',
                 style: TextStyle(
                   color: Colors.white,
@@ -252,7 +254,7 @@ class DrawerMenu extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
         ),
@@ -269,12 +271,12 @@ class HistoriaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Historia '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Historia '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -282,7 +284,7 @@ class HistoriaPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página de Historia'),
       ),
       drawer: DrawerMenu(),
@@ -295,12 +297,12 @@ class ServiciosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(' Servicios '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text(' Servicios '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -309,7 +311,7 @@ class ServiciosPage extends StatelessWidget {
         ),
       ),
 
-      body: Center(
+      body: const Center(
         child: Text('Página de Servicios'),
       ),
       drawer: DrawerMenu(),
@@ -322,12 +324,12 @@ class NoticiasPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Noticias '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Noticias '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -335,7 +337,7 @@ class NoticiasPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página de Noticias'),
       ),
       drawer: DrawerMenu(),
@@ -348,12 +350,12 @@ class VideosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Videos '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Videos '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -361,7 +363,7 @@ class VideosPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página de Videos'),
       ),
       drawer: DrawerMenu(),
@@ -374,12 +376,12 @@ class AlberguesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Albergues '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Albergues '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -387,7 +389,7 @@ class AlberguesPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página de Albergues'),
       ),
       drawer: DrawerMenu(),
@@ -400,12 +402,12 @@ class MapaAlberguesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
      appBar: AppBar(
-        title: Text('MapaAlbergues '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('MapaAlbergues '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -413,7 +415,7 @@ class MapaAlberguesPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página de Mapa de Albergues'),
       ),
       drawer: DrawerMenu(),
@@ -426,12 +428,12 @@ class MedidasPreventivasPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('MedidasPreventivas '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('MedidasPreventivas '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -439,7 +441,7 @@ class MedidasPreventivasPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página de Medidas Preventivas'),
       ),
       drawer: DrawerMenu(),
@@ -452,12 +454,12 @@ class MiembrosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Miembros '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Miembros '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -465,7 +467,7 @@ class MiembrosPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página de Miembros'),
       ),
       drawer: DrawerMenu(),
@@ -478,12 +480,12 @@ class QuieroSerVoluntarioPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quiero ser Voluntario '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Quiero ser Voluntario '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -491,7 +493,7 @@ class QuieroSerVoluntarioPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página de Quiero ser Voluntario'),
       ),
       drawer: DrawerMenu(),
@@ -499,43 +501,19 @@ class QuieroSerVoluntarioPage extends StatelessWidget {
   }
 }
 
-class ReportarSituacionPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Reportar Situaciones '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      body: Center(
-        child: Text('Página para reportar situaciones de emergencia'),
-      ),
-      drawer: DrawerMenu(),
-    );
-  }
-}
+
 
 class MisSituacionesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mis Situaciones '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Mis Situaciones '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -543,7 +521,7 @@ class MisSituacionesPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página para visualizar el historial de situaciones reportadas'),
       ),
       drawer: DrawerMenu(),
@@ -556,12 +534,12 @@ class MapaSituacionesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mapa de Situaciones '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6), 
+        title: const Text('Mapa de Situaciones '),
+        backgroundColor: const Color.fromARGB(255, 231, 141, 6), 
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -569,7 +547,7 @@ class MapaSituacionesPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Página para visualizar el mapa interactivo de situaciones reportadas'),
       ),
       drawer: DrawerMenu(),
