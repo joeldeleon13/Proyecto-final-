@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'services/reports.dart';
-
 void main() {
   runApp(MyApp());
 }
@@ -11,18 +9,13 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage(
-        token: '',
-      ),
+    return MaterialApp(
+      home: HomePage(),
     );
   }
 }
 
 class HomePage extends StatelessWidget {
-  final String token;
-
-  const HomePage({Key? key, required this.token}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,9 +175,8 @@ class DrawerMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const HomePage(
-                            token: '',
-                          ))); // Regresar a la página de inicio
+                      builder: (context) =>
+                          HomePage())); // Regresar a la página de inicio
             }),
             buildListTile(Icons.library_books, 'Historia', () {
               Navigator.pop(context);
@@ -200,6 +192,13 @@ class DrawerMenu extends StatelessWidget {
               Navigator.pop(context);
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => NoticiasPage()));
+            }),
+            buildListTile(Icons.article, 'Noticias Específicas', () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NoticiasEspecificasPage()));
             }),
             buildListTile(Icons.video_library, 'Videos', () {
               Navigator.pop(context);
@@ -236,21 +235,13 @@ class DrawerMenu extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => QuieroSerVoluntarioPage()));
             }),
-            buildListTile(
-              Icons.report,
-              'Reportar Situación',
-              () {
-                Navigator.pop(context);
-                Navigator.push(
+            buildListTile(Icons.report, 'Reportar Situación', () {
+              Navigator.pop(context);
+              Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const ReportSituationPage(token: "",),
-                  ),
-                );
-              },
-            ),
-
+                      builder: (context) => ReportarSituacionPage()));
+            }),
             buildListTile(Icons.history, 'Mis Situaciones', () {
               Navigator.pop(context);
               Navigator.push(
@@ -320,7 +311,7 @@ class HistoriaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Historia '),
+        title: Text('Historia'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
         leading: Builder(
           builder: (BuildContext context) {
@@ -333,8 +324,48 @@ class HistoriaPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Text('Página de Historia'),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Historia de la Defensa Civil',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'La Defensa Civil es una organización dedicada a proteger a la población y los recursos frente a desastres naturales, crisis y emergencias. Su origen se remonta a la Segunda Guerra Mundial, cuando surgió la necesidad de proteger a los civiles de los bombardeos y ataques enemigos. En muchos países, la experiencia de la guerra impulsó la creación de sistemas formales de Defensa Civil.',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Desde sus comienzos, la Defensa Civil ha evolucionado en respuesta a una variedad de amenazas, tanto naturales como provocadas por el hombre. A lo largo de los años, se ha convertido en una institución multifacética que aborda una amplia gama de situaciones de emergencia, incluyendo terremotos, huracanes, inundaciones, incendios forestales, accidentes industriales, ataques terroristas y pandemias.',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Los principales objetivos de la Defensa Civil son la prevención, preparación, respuesta y recuperación ante desastres. Esto implica la implementación de medidas preventivas, la planificación de emergencias, la capacitación de la población en primeros auxilios y evacuación, la coordinación de operaciones de rescate y la asistencia en la fase de recuperación y reconstrucción.',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'A lo largo de su historia, la Defensa Civil ha logrado numerosos avances y hitos significativos. Estos incluyen el desarrollo de sistemas de alerta temprana, la creación de protocolos de respuesta ante emergencias, la adopción de tecnologías avanzadas para la gestión de desastres y la colaboración internacional en materia de ayuda humanitaria.',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
       ),
       drawer: DrawerMenu(),
     );
@@ -439,6 +470,32 @@ class NoticiasPage extends StatelessWidget {
     } else {
       throw Exception('Failed to load noticias');
     }
+  }
+}
+
+class NoticiasEspecificasPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('NoticiasEspecificas '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      body: Center(
+        child: Text('Página de NoticiasEspecificas'),
+      ),
+      drawer: DrawerMenu(),
+    );
   }
 }
 
@@ -859,6 +916,32 @@ class _QuieroSerVoluntarioPageState extends State<QuieroSerVoluntarioPage> {
             ),
           ],
         ),
+      ),
+      drawer: DrawerMenu(),
+    );
+  }
+}
+
+class ReportarSituacionPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Reportar Situaciones '),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      body: Center(
+        child: Text('Página para reportar situaciones de emergencia'),
       ),
       drawer: DrawerMenu(),
     );
