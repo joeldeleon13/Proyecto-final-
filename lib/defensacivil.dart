@@ -1,6 +1,10 @@
+// ignore_for_file: unused_import
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(MyApp());
@@ -499,28 +503,84 @@ class NoticiasEspecificasPage extends StatelessWidget {
   }
 }
 
-class VideosPage extends StatelessWidget {
+class VideosPage extends StatefulWidget {
+  @override
+  _VideosPageState createState() => _VideosPageState();
+}
+
+class _VideosPageState extends State<VideosPage> {
+  late List<dynamic> _videos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchVideos();
+  }
+
+  Future<void> _fetchVideos() async {
+    final apiUrl = 'https://adamix.net/defensa_civil/def/videos.php';
+    final response = await http.get(Uri.parse(apiUrl));
+    if (response.statusCode == 200) {
+      setState(() {
+        _videos = json.decode(response.body)['datos'];
+      });
+    } else {
+      throw Exception('Failed to load videos');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Videos '),
+        title: Text('Videos'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
+      ),
+      body: _videos.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: _videos.length,
+              itemBuilder: (context, index) {
+                final video = _videos[index];
+                return ListTile(
+                  title: Text(video['titulo']),
+                  subtitle: Text(video['descripcion']),
+                  onTap: () {
+                    _playYoutubeVideo(video['link']);
+                  },
+                );
               },
-            );
-          },
+            ),
+    );
+  }
+
+  void _playYoutubeVideo(String videoId) {
+    YoutubePlayerController _controller = YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+      ),
+    );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text('Video Player'),
+          ),
+          body: Center(
+            child: YoutubePlayer(
+              controller: _controller,
+              showVideoProgressIndicator: true,
+              progressIndicatorColor: Colors.amber,
+              progressColors: ProgressBarColors(
+                playedColor: Colors.amber,
+                handleColor: Colors.amberAccent,
+              ),
+            ),
+          ),
         ),
       ),
-      body: Center(
-        child: Text('Página de Videos'),
-      ),
-      drawer: DrawerMenu(),
     );
   }
 }

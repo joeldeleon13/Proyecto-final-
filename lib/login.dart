@@ -31,7 +31,7 @@ class LoginPage extends StatelessWidget {
           // Navegar a la página HomePage después de iniciar sesión correctamente
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomePage(token: '',)),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         } else {
           _showErrorDialog(context, responseData['mensaje']);
