@@ -758,9 +758,32 @@ void initState() {
 class MapaAlberguesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final List<LatLng> ubicaciones = [
+    LatLng(18.47893, -69.89178), // Polideportivo San Carlos
+    LatLng(18.478692, -69.901247), // Politénico Don Bosco
+    LatLng(18.479236, -69.899758), // Parroquia Don Bosco
+    LatLng(18.476092, -69.889178), // Iglesia Abventista Del 7Mo Dia Franco Creor
+    LatLng(18.475336, -69.893956), // Parroquia San Carlos Borromeo
+    LatLng(18.479367, -69.889074), // Asociación De Detallista Del Dn
+    LatLng(18.478761, -69.893783), // Escuela Santo Socorro
+    LatLng(18.494045, -69.888648), // Escuela Básica/Primaria Republica De Hondura
+    LatLng(18.48582, -69.888012), // Escuela Santo Socorro
+    LatLng(18.479961, -69.912786), // Liceo Panamericano
+    LatLng(18.493812, -69.896893), // Escuela Domingo Savio
+    LatLng(18.497888, -69.896018), // Centro Educativo Republica De Haiti
+    LatLng(18.501312, -69.898725), // Escuela Básica/Primaria Republica De Colombia
+    LatLng(18.49643, -69.92714), // Escuela Parroquia Cristo Rey
+    LatLng(18.489991, -69.925347), // Politénico Victor Estrella Liz
+    LatLng(18.496885, -69.926235), // Parroquia Cristo Rey
+    LatLng(18.489013, -69.931691), // Instituto De Arte Y Oficios ( Itao )
+    LatLng(18.445797, -69.936868), // Club Educativo, Deportivo Y Cultural General Antonio Duverge
+    LatLng(18.472356, -69.93028), // Colegio Luis Muñoz Rivera
+    LatLng(18.454124, -69.928007), // Escue
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('MapaAlbergues '),
+        title: Text('Mapa de Situaciones'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
         leading: Builder(
           builder: (BuildContext context) {
@@ -773,8 +796,9 @@ class MapaAlberguesPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Text('Página de Mapa de Albergues'),
+      body: MapaPage(
+        ubicaciones: ubicaciones,
+        nombreCompleto: "",
       ),
       drawer: DrawerMenu(),
     );
@@ -1288,7 +1312,7 @@ class _MisSituacionesPageState extends State<MisSituacionesPage> {
       final response = await http.post(
         Uri.parse('https://adamix.net/defensa_civil/def/situaciones.php'),
         body: {
-          'token': '07c649009f5bfecbce1df795efeb60e0', // Reemplaza 'your_token_here' con tu token
+          'token': 'cd33e652a992619c2332e63385c44c45', // Reemplaza 'your_token_here' con tu token
         },
       );
       if (response.statusCode == 200) {
@@ -1366,6 +1390,14 @@ class Situacion {
 class MapaSituacionesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final List<LatLng> ubicaciones = [
+      LatLng(18.4861, -69.9312), // Santo Domingo
+      LatLng(19.9008, -70.7108), // Puerto Plata
+      LatLng(18.8079, -71.2290), // San Juan
+      LatLng(18.9522, -70.4086), // Bonao
+      LatLng(19.4510, -70.6979), // Santiago
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Mapa de Situaciones'),
@@ -1381,9 +1413,9 @@ class MapaSituacionesPage extends StatelessWidget {
           },
         ),
       ),
-      body: MapaPage( // Utiliza el widget MapaPage aquí
-        ubicacionMarcador: LatLng(0, 0), // Puedes proporcionar una ubicación predeterminada si es necesario
-        nombreCompleto: "", // Puedes proporcionar un nombre predeterminado si es necesario
+      body: MapaPage(
+        ubicaciones: ubicaciones,
+        nombreCompleto: "",
       ),
       drawer: DrawerMenu(),
     );

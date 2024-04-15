@@ -29,28 +29,32 @@ class _InicioState extends State<Inicio> {
   final _formKey = GlobalKey<FormState>();
   final _nombreController = TextEditingController();
   final _apellidoController = TextEditingController();
-  final _latitudController = TextEditingController();
-  final _longitudController = TextEditingController();
 
   String _nombreCompleto = "";
 
   void _mostrarMapa() {
-    final ubicacionMarcador = LatLng(18.4861, -69.9312); // Coordenadas de Santo Domingo
+  final ubicaciones = [
+    LatLng(18.4861, -69.9312), // Santo Domingo
+    LatLng(19.7902, -70.6902), // Puerto Plata
+    LatLng(18.8075, -71.2290), // San Juan
+    LatLng(18.9424, -70.4093), // Bonao
+    LatLng(19.4500, -70.6667), // Santiago
+  ];
 
-    setState(() {
-      _nombreCompleto = "${_nombreController.text} ${_apellidoController.text}";
-    });
+  setState(() {
+    _nombreCompleto = "${_nombreController.text} ${_apellidoController.text}";
+  });
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MapaPage(
-          ubicacionMarcador: ubicacionMarcador,
-          nombreCompleto: _nombreCompleto,
-        ),
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MapaPage(
+        ubicaciones: ubicaciones,
+        nombreCompleto: _nombreCompleto,
       ),
-    );
-  }
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -77,20 +81,6 @@ class _InicioState extends State<Inicio> {
                     labelText: 'Apellido',
                   ),
                 ),
-                TextFormField(
-                  controller: _latitudController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Latitud',
-                  ),
-                ),
-                TextFormField(
-                  controller: _longitudController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Longitud',
-                  ),
-                ),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
@@ -110,43 +100,45 @@ class _InicioState extends State<Inicio> {
 }
 
 class MapaPage extends StatelessWidget {
-  final LatLng ubicacionMarcador;
+  final List<LatLng> ubicaciones;
   final String nombreCompleto;
 
   const MapaPage({
-    required this.ubicacionMarcador,
+    required this.ubicaciones,
     required this.nombreCompleto,
   });
 
-   Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mapa'),
+        title: const Text('Mapa'),
       ),
       body: FlutterMap(
         options: MapOptions(
-          center: ubicacionMarcador, 
+          center: ubicaciones.first, // Centramos el mapa en la primera ubicación
           zoom: 10.0,
-        ), 
+        ),
         children: [
           TileLayer(
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             subdomains: ['a', 'b', 'c'],
-          ), 
+          ),
           MarkerLayer(markers: [
-            Marker(
-              width: 60.0,
-              height: 60.0,
-              point: ubicacionMarcador, 
-              child: 
-              Icon(
-                Icons.person_pin, 
-                size: 50,
-                color: Color.fromARGB(255, 244, 54, 54),
-              ))
-          ])
-        ]
-        ),
+            for (final ubicacion in ubicaciones)
+              Marker(
+                width: 60.0,
+                height: 60.0,
+                point: ubicacion,
+                child: Icon(
+                  Icons.person_pin,
+                  size: 50,
+                  color: Colors.red, // Puedes cambiar el color del marcador si lo deseas
+                ),
+              ),
+          ]),
+        ],
+      ),
     );
   }
 }
