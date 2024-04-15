@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:defensacivilproject/mapa.dart'; // Importa el archivo mapa.dart
+import 'package:latlong2/latlong.dart';
 void main() {
   runApp(MyApp());
 }
@@ -189,7 +191,7 @@ class DrawerMenu extends StatelessWidget {
             buildListTile(Icons.build, 'Servicios', () {
               Navigator.pop(context);
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ServiciosPage()));
+                  MaterialPageRoute(builder: (context) => ServiciosPage()));
             }),
             buildListTile(Icons.article, 'Noticias', () {
               Navigator.pop(context);
@@ -243,14 +245,14 @@ class DrawerMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ReportarSituacionPage(token: '',)));
+                      builder: (context) => ReportarSituacionPage()));
             }),
             buildListTile(Icons.history, 'Mis Situaciones', () {
               Navigator.pop(context);
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const MySituationsPage()));
+                      builder: (context) => MisSituacionesPage()));
             }),
             buildListTile(Icons.map_outlined, 'Mapa de Situaciones', () {
               Navigator.pop(context);
@@ -375,12 +377,50 @@ class HistoriaPage extends StatelessWidget {
   }
 }
 
-class ServiciosPage extends StatelessWidget {
+class ServiciosPage extends StatefulWidget {
+  @override
+  _ServiciosPageState createState() => _ServiciosPageState();
+}
+
+class _ServiciosPageState extends State<ServiciosPage> {
+  List<dynamic> servicios = [];
+
+  Future<void> _fetchServicios() async {
+    final String apiUrl = 'https://adamix.net/defensa_civil/def/servicios.php';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final bool success = responseData['exito'];
+        final List<dynamic> serviciosData = responseData['datos'];
+
+        if (success) {
+          setState(() {
+            servicios = serviciosData;
+          });
+        } else {
+          // Manejar el caso en que no haya éxito
+        }
+      } else {
+        // Manejar el caso en que no se pueda conectar al servidor
+      }
+    } catch (e) {
+      // Manejar errores de conexión
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchServicios();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(' Servicios '),
+        title: Text('Servicios'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
         leading: Builder(
           builder: (BuildContext context) {
@@ -393,8 +433,16 @@ class ServiciosPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Text('Página de Servicios'),
+      body: ListView.builder(
+        itemCount: servicios.length,
+        itemBuilder: (BuildContext context, int index) {
+          final servicio = servicios[index];
+          return ListTile(
+            title: Text(servicio['nombre']),
+            subtitle: Text(servicio['descripcion']),
+            leading: Image.network(servicio['foto']),
+          );
+        },
       ),
       drawer: DrawerMenu(),
     );
@@ -1078,33 +1126,189 @@ class _QuieroSerVoluntarioPageState extends State<QuieroSerVoluntarioPage> {
   }
 }
 
-class ReportarSituacionPage extends StatelessWidget {
+class ReportarSituacionPage extends StatefulWidget {
+  @override
+  _ReportarSituacionPageState createState() => _ReportarSituacionPageState();
+}
+
+class _ReportarSituacionPageState extends State<ReportarSituacionPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _tituloController = TextEditingController();
+  final TextEditingController _descripcionController = TextEditingController();
+  final TextEditingController _fotoBase64Controller = TextEditingController();
+  final TextEditingController _latitudController = TextEditingController();
+  final TextEditingController _longitudController = TextEditingController();
+  final TextEditingController _tokenController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reportar Situaciones '),
+        title: Text('Reportar Situaciones'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: _tituloController,
+                decoration: InputDecoration(labelText: 'Título del evento'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa un título';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _descripcionController,
+                decoration: InputDecoration(labelText: 'Descripción'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa una descripción';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _fotoBase64Controller,
+                decoration: InputDecoration(labelText: 'Foto (base64)'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa una foto en formato base64';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _latitudController,
+                decoration: InputDecoration(labelText: 'Latitud'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa la latitud';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _longitudController,
+                decoration: InputDecoration(labelText: 'Longitud'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa la longitud';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _tokenController,
+                decoration: InputDecoration(labelText: 'Token de autenticación'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa un token de autenticación';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _reportarSituacion();
+                  }
+                },
+                child: Text('Reportar Situación'),
+              ),
+            ],
+          ),
         ),
       ),
-      body: Center(
-        child: Text('Página para reportar situaciones de emergencia'),
-      ),
-      drawer: DrawerMenu(),
     );
   }
+
+  Future<void> _reportarSituacion() async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://adamix.net/defensa_civil/def/nueva_situacion.php'),
+        body: {
+          'titulo': _tituloController.text,
+          'descripcion': _descripcionController.text,
+          'foto': _fotoBase64Controller.text,
+          'latitud': _latitudController.text,
+          'longitud': _longitudController.text,
+          'token': _tokenController.text,
+        },
+      );
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        if (responseData['exito'] == true) {
+          // Éxito al reportar la situación
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Situación reportada exitosamente')));
+        } else {
+          // Error al reportar la situación
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData['mensaje'])));
+        }
+      } else {
+        // Error en la solicitud HTTP
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error en la solicitud: ${response.statusCode}')));
+      }
+    } catch (e) {
+      // Error en la solicitud
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+}
+class MisSituacionesPage extends StatefulWidget {
+  @override
+  _MisSituacionesPageState createState() => _MisSituacionesPageState();
 }
 
-class MisSituacionesPage extends StatelessWidget {
+class _MisSituacionesPageState extends State<MisSituacionesPage> {
+  List<Situacion> _situaciones = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSituaciones();
+  }
+
+  Future<void> _fetchSituaciones() async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://adamix.net/defensa_civil/def/situaciones.php'),
+        body: {
+          'token': '07c649009f5bfecbce1df795efeb60e0', // Reemplaza 'your_token_here' con tu token
+        },
+      );
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        if (responseData['exito'] == true) {
+          final List<dynamic> data = responseData['datos'];
+          setState(() {
+            _situaciones = data.map((json) => Situacion.fromJson(json)).toList();
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData['mensaje'])));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error en la solicitud: ${response.statusCode}')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
