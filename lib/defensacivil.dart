@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'services/mi_Situaciones.dart';
+import 'services/reports.dart';
+import 'services/services.dart';
 void main() {
   runApp(MyApp());
 }
@@ -189,7 +193,7 @@ class DrawerMenu extends StatelessWidget {
             buildListTile(Icons.build, 'Servicios', () {
               Navigator.pop(context);
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ServiciosPage()));
+                  MaterialPageRoute(builder: (context) => const ServiciosPage()));
             }),
             buildListTile(Icons.article, 'Noticias', () {
               Navigator.pop(context);
@@ -243,14 +247,14 @@ class DrawerMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReportarSituacionPage()));
+                      builder: (context) => const ReportarSituacionPage(token: '',)));
             }),
             buildListTile(Icons.history, 'Mis Situaciones', () {
               Navigator.pop(context);
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MisSituacionesPage()));
+                      builder: (context) => const MySituationsPage()));
             }),
             buildListTile(Icons.map_outlined, 'Mapa de Situaciones', () {
               Navigator.pop(context);
@@ -375,31 +379,6 @@ class HistoriaPage extends StatelessWidget {
   }
 }
 
-class ServiciosPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(' Servicios '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      body: Center(
-        child: Text('Página de Servicios'),
-      ),
-      drawer: DrawerMenu(),
-    );
-  }
-}
 
 class NoticiasPage extends StatelessWidget {
   @override
@@ -1033,32 +1012,6 @@ class _QuieroSerVoluntarioPageState extends State<QuieroSerVoluntarioPage> {
             ),
           ],
         ),
-      ),
-      drawer: DrawerMenu(),
-    );
-  }
-}
-
-class ReportarSituacionPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Reportar Situaciones '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      body: Center(
-        child: Text('Página para reportar situaciones de emergencia'),
       ),
       drawer: DrawerMenu(),
     );

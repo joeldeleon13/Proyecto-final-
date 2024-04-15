@@ -1,9 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:defensacivilproject/Recuperar.dart';
 import 'package:defensacivilproject/signup.dart';
 import 'package:defensacivilproject/defensacivil.dart';
+import 'services/userdatos.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -28,9 +31,20 @@ class LoginPage extends StatelessWidget {
         final bool success = responseData['exito'];
 
         if (success) {
-          // Imprime los datos recibidos en la consola de depuración
-          print('Inicio de sesión exitoso:');
-          print(responseData['datos']);
+          // Asigna los datos del usuario a la clase UserData después de iniciar sesión exitosamente
+          UserData.nombre = responseData['datos']['nombre'];
+          UserData.apellido = responseData['datos']['apellido'];
+          UserData.correo = responseData['datos']['correo'];
+          UserData.telefono = responseData['datos']['telefono'];
+          UserData.token = responseData['datos']['token'];
+
+          // Imprime los datos del usuario en la consola de depuración
+          print('Datos del usuario después del inicio de sesión:');
+          print(UserData.nombre);
+          print(UserData.apellido);
+          print(UserData.correo);
+          print(UserData.telefono);
+          print(UserData.token);
 
           // Navegar a la página HomePage después de iniciar sesión correctamente
           Navigator.pushReplacement(

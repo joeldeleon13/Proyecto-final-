@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 
@@ -13,6 +14,7 @@ class Situation {
   final String estado;
   final String comentarios;
   final String foto;
+  final String token;
 
   Situation({
     required this.id,
@@ -22,11 +24,12 @@ class Situation {
     required this.estado,
     required this.comentarios,
     required this.foto,
+    required this.token,
   });
 }
 
-class MapaSituacionesPage extends StatelessWidget {
-  const MapaSituacionesPage({super.key});
+class MisSituacionesPage extends StatelessWidget {
+  const MisSituacionesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +44,14 @@ class MapaSituacionesPage extends StatelessWidget {
 }
 
 class MySituationsPage extends StatefulWidget {
-  const MySituationsPage({super.key});
+  const MySituationsPage({Key? key}) : super(key: key);
 
   @override
   _MySituationsPageState createState() => _MySituationsPageState();
 }
 
 class _MySituationsPageState extends State<MySituationsPage> {
-  List<Situation> situations = []; // Lista para almacenar las situaciones reportadas
+  List<Situation> situations = [];
 
   @override
   void initState() {
@@ -57,25 +60,46 @@ class _MySituationsPageState extends State<MySituationsPage> {
   }
 
   Future<void> fetchSituations() async {
-    final response = await http.get('https://adamix.net/defensa_civil/def/situaciones.php' as Uri);
-    if (response.statusCode == 200) {
-      // Parsea la respuesta JSON y actualiza la lista de situaciones
-      List<dynamic> data = jsonDecode(response.body);
-      setState(() {
-        situations = data.map((situation) {
-          return Situation(
-            id: situation['id'],
-            fecha: DateTime.parse(situation['fecha']),
-            titulo: situation['titulo'],
-            descripcion: situation['descripcion'],
-            estado: situation['estado'],
-            comentarios: situation['comentarios'],
-            foto: situation['foto'],
-          );
-        }).toList();
-      });
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+
+    if (token != null) {
+      final String apiUrl = 'https://adamix.net/defensa_civil/def/situaciones.php'; // Reemplaza con la URL correcta
+      try {
+        final response = await http.get(
+          Uri.parse(apiUrl),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> data = jsonDecode(response.body);
+          if (data['exito'] == true) {
+            List<dynamic> situationsData = data['datos'];
+            setState(() {
+              situations = situationsData.map((situation) {
+                return Situation(
+                  id: situation['id'],
+                  fecha: DateTime.parse(situation['fecha']),
+                  titulo: situation['titulo'],
+                  descripcion: situation['descripcion'],
+                  estado: situation['estado'],
+                  comentarios: situation['comentarios'],
+                  foto: situation['foto'],
+                  token: token, // Asegúrate de pasar el token a cada situación
+                );
+              }).toList();
+            });
+          } else {
+            throw Exception('Error: ${data['mensaje']}');
+          }
+        } else {
+          throw Exception('Failed to load situations');
+        }
+      } catch (e) {
+        print('Error fetching situations: $e');
+      }
     } else {
-      throw Exception('Failed to load situations');
+      print('Token not found in SharedPreferences');
     }
   }
 
@@ -103,6 +127,7 @@ class _MySituationsPageState extends State<MySituationsPage> {
     );
   }
 }
+
 
 class SituationDetailsPage extends StatelessWidget {
   final Situation situation;
