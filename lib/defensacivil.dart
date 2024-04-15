@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:defensacivilproject/mapa.dart'; // Importa el archivo mapa.dart
 void main() {
   runApp(MyApp());
 }
@@ -375,12 +379,50 @@ class HistoriaPage extends StatelessWidget {
   }
 }
 
-class ServiciosPage extends StatelessWidget {
+class ServiciosPage extends StatefulWidget {
+  @override
+  _ServiciosPageState createState() => _ServiciosPageState();
+}
+
+class _ServiciosPageState extends State<ServiciosPage> {
+  List<dynamic> servicios = [];
+
+  Future<void> _fetchServicios() async {
+    final String apiUrl = 'https://adamix.net/defensa_civil/def/servicios.php';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final bool success = responseData['exito'];
+        final List<dynamic> serviciosData = responseData['datos'];
+
+        if (success) {
+          setState(() {
+            servicios = serviciosData;
+          });
+        } else {
+          // Manejar el caso en que no haya éxito
+        }
+      } else {
+        // Manejar el caso en que no se pueda conectar al servidor
+      }
+    } catch (e) {
+      // Manejar errores de conexión
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchServicios();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(' Servicios '),
+        title: Text('Servicios'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
         leading: Builder(
           builder: (BuildContext context) {
@@ -393,8 +435,16 @@ class ServiciosPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Text('Página de Servicios'),
+      body: ListView.builder(
+        itemCount: servicios.length,
+        itemBuilder: (BuildContext context, int index) {
+          final servicio = servicios[index];
+          return ListTile(
+            title: Text(servicio['nombre']),
+            subtitle: Text(servicio['descripcion']),
+            leading: Image.network(servicio['foto']),
+          );
+        },
       ),
       drawer: DrawerMenu(),
     );
@@ -481,7 +531,7 @@ class NoticiasEspecificasPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('NoticiasEspecificas '),
+        title: Text('Noticias Específicas de Defensa Civil'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
         leading: Builder(
           builder: (BuildContext context) {
@@ -494,14 +544,52 @@ class NoticiasEspecificasPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Text('Página de NoticiasEspecificas'),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Noticias Específicas de Defensa Civil',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              '1. Lanzamiento de nueva campaña de prevención de desastres naturales.',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'La Defensa Civil ha anunciado el lanzamiento de una nueva campaña para concienciar a la población sobre la importancia de la prevención de desastres naturales, como terremotos, inundaciones y incendios forestales. La campaña incluirá charlas educativas, simulacros y material informativo distribuido en todo el país.',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            Text(
+              '2. Capacitación en primeros auxilios para voluntarios de Defensa Civil.',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Este mes, la Defensa Civil llevará a cabo una serie de cursos de capacitación en primeros auxilios para los voluntarios que forman parte de la organización. Estos cursos se centrarán en proporcionar habilidades básicas de primeros auxilios, como RCP, manejo de heridas y atención de emergencias médicas.',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            Text(
+              '3. Implementación de nuevas medidas de prevención en zonas de riesgo.',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Ante la temporada de lluvias intensas que se avecina, la Defensa Civil está trabajando en la implementación de nuevas medidas de prevención en zonas de riesgo, como la limpieza de cauces de ríos, la instalación de sistemas de alerta temprana y la evacuación preventiva de comunidades vulnerables.',
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
       ),
       drawer: DrawerMenu(),
     );
   }
 }
-
 class VideosPage extends StatefulWidget {
   @override
   _VideosPageState createState() => _VideosPageState();
@@ -583,6 +671,7 @@ class _VideosPageState extends State<VideosPage> {
     );
   }
 }
+
 
 
 class AlberguesPage extends StatefulWidget {
@@ -1039,55 +1128,239 @@ class _QuieroSerVoluntarioPageState extends State<QuieroSerVoluntarioPage> {
   }
 }
 
-class ReportarSituacionPage extends StatelessWidget {
+class ReportarSituacionPage extends StatefulWidget {
+  @override
+  _ReportarSituacionPageState createState() => _ReportarSituacionPageState();
+}
+
+class _ReportarSituacionPageState extends State<ReportarSituacionPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _tituloController = TextEditingController();
+  final TextEditingController _descripcionController = TextEditingController();
+  final TextEditingController _fotoBase64Controller = TextEditingController();
+  final TextEditingController _latitudController = TextEditingController();
+  final TextEditingController _longitudController = TextEditingController();
+  final TextEditingController _tokenController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reportar Situaciones '),
+        title: Text('Reportar Situaciones'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: _tituloController,
+                decoration: InputDecoration(labelText: 'Título del evento'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa un título';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _descripcionController,
+                decoration: InputDecoration(labelText: 'Descripción'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa una descripción';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _fotoBase64Controller,
+                decoration: InputDecoration(labelText: 'Foto (base64)'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa una foto en formato base64';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _latitudController,
+                decoration: InputDecoration(labelText: 'Latitud'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa la latitud';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _longitudController,
+                decoration: InputDecoration(labelText: 'Longitud'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa la longitud';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _tokenController,
+                decoration: InputDecoration(labelText: 'Token de autenticación'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa un token de autenticación';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _reportarSituacion();
+                  }
+                },
+                child: Text('Reportar Situación'),
+              ),
+            ],
+          ),
         ),
       ),
-      body: Center(
-        child: Text('Página para reportar situaciones de emergencia'),
+    );
+  }
+
+  Future<void> _reportarSituacion() async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://adamix.net/defensa_civil/def/nueva_situacion.php'),
+        body: {
+          'titulo': _tituloController.text,
+          'descripcion': _descripcionController.text,
+          'foto': _fotoBase64Controller.text,
+          'latitud': _latitudController.text,
+          'longitud': _longitudController.text,
+          'token': _tokenController.text,
+        },
+      );
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        if (responseData['exito'] == true) {
+          // Éxito al reportar la situación
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Situación reportada exitosamente')));
+        } else {
+          // Error al reportar la situación
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData['mensaje'])));
+        }
+      } else {
+        // Error en la solicitud HTTP
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error en la solicitud: ${response.statusCode}')));
+      }
+    } catch (e) {
+      // Error en la solicitud
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+}
+class MisSituacionesPage extends StatefulWidget {
+  @override
+  _MisSituacionesPageState createState() => _MisSituacionesPageState();
+}
+
+class _MisSituacionesPageState extends State<MisSituacionesPage> {
+  List<Situacion> _situaciones = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSituaciones();
+  }
+
+  Future<void> _fetchSituaciones() async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://adamix.net/defensa_civil/def/situaciones.php'),
+        body: {
+          'token': '07c649009f5bfecbce1df795efeb60e0', // Reemplaza 'your_token_here' con tu token
+        },
+      );
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        if (responseData['exito'] == true) {
+          final List<dynamic> data = responseData['datos'];
+          setState(() {
+            _situaciones = data.map((json) => Situacion.fromJson(json)).toList();
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData['mensaje'])));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error en la solicitud: ${response.statusCode}')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mis Situaciones'),
+        backgroundColor: Color.fromARGB(255, 231, 141, 6),
+      ),
+      body: ListView.builder(
+        itemCount: _situaciones.length,
+        itemBuilder: (context, index) {
+          final situacion = _situaciones[index];
+          return ListTile(
+            title: Text(situacion.titulo),
+            subtitle: Text(situacion.descripcion),
+            onTap: () {
+              // Implementa aquí la navegación para ver los detalles de la situación
+            },
+          );
+        },
       ),
       drawer: DrawerMenu(),
     );
   }
 }
 
-class MisSituacionesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Mis Situaciones '),
-        backgroundColor: Color.fromARGB(255, 231, 141, 6),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      body: Center(
-        child: Text(
-            'Página para visualizar el historial de situaciones reportadas'),
-      ),
-      drawer: DrawerMenu(),
+class Situacion {
+  final String id;
+  final String fecha;
+  final String titulo;
+  final String descripcion;
+  final String foto;
+  final String estado;
+
+  Situacion({
+    required this.id,
+    required this.fecha,
+    required this.titulo,
+    required this.descripcion,
+    required this.foto,
+    required this.estado,
+  });
+
+  factory Situacion.fromJson(Map<String, dynamic> json) {
+    return Situacion(
+      id: json['id'],
+      fecha: json['fecha'],
+      titulo: json['titulo'],
+      descripcion: json['descripcion'],
+      foto: json['foto'],
+      estado: json['estado'],
     );
   }
 }
@@ -1097,7 +1370,7 @@ class MapaSituacionesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mapa de Situaciones '),
+        title: Text('Mapa de Situaciones'),
         backgroundColor: Color.fromARGB(255, 231, 141, 6),
         leading: Builder(
           builder: (BuildContext context) {
@@ -1110,9 +1383,9 @@ class MapaSituacionesPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Text(
-            'Página para visualizar el mapa interactivo de situaciones reportadas'),
+      body: MapaPage( // Utiliza el widget MapaPage aquí
+        ubicacionMarcador: LatLng(0, 0), // Puedes proporcionar una ubicación predeterminada si es necesario
+        nombreCompleto: "", // Puedes proporcionar un nombre predeterminado si es necesario
       ),
       drawer: DrawerMenu(),
     );
