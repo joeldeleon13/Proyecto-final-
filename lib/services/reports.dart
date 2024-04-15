@@ -7,16 +7,16 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class ReportSituationPage extends StatefulWidget {
+class ReportarSituacionPage extends StatefulWidget {
   final String token;
 
-  const ReportSituationPage({Key? key, required this.token}) : super(key: key);
+  const ReportarSituacionPage({Key? key, required this.token}) : super(key: key);
 
   @override
   _ReportSituationPageState createState() => _ReportSituationPageState();
 }
 
-class _ReportSituationPageState extends State<ReportSituationPage> {
+class _ReportSituationPageState extends State<ReportarSituacionPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   Uint8List? _imageBytes; // Almacenar la imagen como bytes
